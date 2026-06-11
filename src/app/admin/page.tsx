@@ -149,18 +149,26 @@ export default function AdminPage() {
             <h1 className="text-4xl font-bold mb-2">📹 Gerenciador de Vídeos</h1>
             <p className="text-white/60">Faça upload e gerencie os vídeos do seu portfólio</p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition"
-            title="Sair da área de admin"
-          >
-            <LogOut size={18} />
-            <span className="text-sm font-medium">Sair</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <a
+              href="/admin/dashboard"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-sm text-white/70 hover:text-white transition"
+            >
+              🖼️ Imagens
+            </a>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition"
+              title="Sair da área de admin"
+            >
+              <LogOut size={18} />
+              <span className="text-sm font-medium">Sair</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Formulário de Upload */}
+
           <div className="lg:col-span-1">
             <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-6">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
