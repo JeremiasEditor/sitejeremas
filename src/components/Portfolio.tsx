@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import {
   Globe,
   Users,
@@ -60,7 +60,20 @@ const Instagram = ({
   </svg>
 );
 
-const projects = [
+interface Project {
+  client: string;
+  type: string;
+  description: string;
+  stats: string[];
+  youtube: string;
+  instagram: string;
+  website: string;
+  color: string;
+  featured: boolean;
+  image?: string | null;
+}
+
+const BASE_PROJECTS: Project[] = [
   {
     client: "Carlos Santana",
     type: "Long-form Content",
@@ -105,6 +118,28 @@ const categories = [
 export default function Portfolio() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [projects, setProjects] = useState<Project[]>(BASE_PROJECTS);
+
+  // Fetch project images from the data store and merge with base projects
+  useEffect(() => {
+    fetch("/api/admin/projects")
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((data: { client: string; image: string | null }[] | null) => {
+        if (!data) return;
+        setProjects(
+          BASE_PROJECTS.map((p) => {
+            const stored = data.find((d) => d.client === p.client);
+            return stored ? { ...p, image: stored.image } : p;
+          })
+        );
+      })
+      .catch(() => {
+        // Silently fall back to base projects without images
+      });
+  }, []);
 
   return (
     <section id="portfolio" className="relative py-32 overflow-hidden">
@@ -166,9 +201,18 @@ export default function Portfolio() {
                   {/* Profile Image */}
                   <div className="relative flex-shrink-0">
                     <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden bg-primary/10">
-                      <div className="w-full h-full flex items-center justify-center text-primary/40">
-                        <Users size={32} />
-                      </div>
+                      {project.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={project.image}
+                          alt={project.client}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-primary/40">
+                          <Users size={32} />
+                        </div>
+                      )}
                     </div>
                     <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                       <Star size={14} className="text-white fill-white" />
